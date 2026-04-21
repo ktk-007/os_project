@@ -1,0 +1,123 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Multithreading Simulator</title>
+    <link rel="stylesheet" href="multithreading_simulator_v2.css">
+</head>
+<body>
+<div class="sim">
+
+<div class="top-bar">
+  <h2>Multithreading Simulator</h2>
+
+  <div style="display:flex;flex-direction:column;gap:6px">
+    <span class="ctrl-label">Model</span>
+    <select id="model-sel">
+      <option value="many-to-one">Many-to-One</option>
+      <option value="one-to-one">One-to-One</option>
+      <option value="many-to-many">Many-to-Many</option>
+    </select>
+  </div>
+
+  <div style="display:flex;flex-direction:column;gap:6px">
+    <span class="ctrl-label">Scheduling</span>
+    <select id="algo-sel">
+      <option value="fcfs">FCFS</option>
+      <option value="rr">Round Robin</option>
+    </select>
+  </div>
+
+  <div id="quantum-wrap" style="display:none;flex-direction:column;gap:6px">
+    <span class="ctrl-label">Quantum</span>
+    <input type="number" id="quantum-input" min="1" max="10" value="2">
+  </div>
+
+  <div style="display:flex;flex-direction:column;gap:6px">
+    <span class="ctrl-label">Sync</span>
+    <select id="sync-sel">
+      <option value="semaphore">Semaphore</option>
+      <option value="monitor">Monitor (Prod-Cons)</option>
+    </select>
+  </div>
+
+  <button class="btn go" id="btn-start" onclick="toggleSim()">Start</button>
+  <button class="btn danger" onclick="resetSim()">Reset</button>
+  <div class="speed-wrap">
+    <span>Speed</span>
+    <input type="range" id="speed" min="1" max="5" value="2" step="1" oninput="onSpeedChange(this.value)">
+    <span id="speed-lbl">2x</span>
+  </div>
+</div>
+
+<div class="legend">
+  <div class="li"><div class="ld" style="background:var(--green);border:2px solid var(--green)"></div> Running</div>
+  <div class="li"><div class="ld" style="background:#1c2a0a;border:2px solid var(--green)"></div> Ready</div>
+  <div class="li"><div class="ld" style="background:#2a1a1a;border:2px solid var(--red)"></div> Waiting</div>
+  <div class="li"><div class="ld" style="background:#1a1a1a;border:2px solid var(--gray)"></div> Terminated</div>
+  <div class="li"><div class="ld" style="background:var(--bg3);border:2px solid var(--border)"></div> New</div>
+  <div id="algo-badge-wrap" style="margin-left:auto"></div>
+</div>
+
+<div class="stat-chips">
+  <div class="chip">Tick <span id="s-tick">0</span></div>
+  <div class="chip">Running <span id="s-run">0</span></div>
+  <div class="chip">Ready <span id="s-rdy">0</span></div>
+  <div class="chip">Waiting <span id="s-wait">0</span></div>
+  <div class="chip">Done <span id="s-done">0</span></div>
+  <div class="chip" id="rr-chip" style="display:none">RR Slice <span id="s-slice">0</span></div>
+</div>
+
+<div id="mdesc" class="mdesc">Select a model and algorithm, then press Start.</div>
+
+<div class="main-grid">
+  <div style="display:flex;flex-direction:column;gap:20px;height:100%">
+    <div class="panel">
+      <div class="ptitle">User Threads</div>
+      <div class="thread-grid" id="user-threads"></div>
+    </div>
+    <div class="panel" style="padding:16px 24px; flex: 1; justify-content: center;">
+      <div class="ptitle">Thread Mapping</div>
+      <svg class="map-svg" id="map-svg"></svg>
+    </div>
+    <div class="panel">
+      <div class="ptitle">Kernel Threads</div>
+      <div class="thread-grid" id="kernel-threads"></div>
+    </div>
+  </div>
+  <div style="display:flex;flex-direction:column;gap:20px;height:100%">
+    <div class="panel">
+      <div class="ptitle">CPU Scheduler</div>
+      <div class="cpu-box" id="cpu-disp">
+        <div style="color:var(--muted);font-size:16px;font-style:italic">CPU idle</div>
+      </div>
+      <div class="ptitle" style="margin-top:8px">Ready Queue <span id="q-order-lbl" style="font-size:13px;color:var(--orange);margin-left:8px;text-transform:none"></span></div>
+      <div class="qrow" id="ready-queue"></div>
+      <div class="ptitle" style="margin-top:16px">Waiting Queue</div>
+      <div class="qrow" id="wait-queue"></div>
+    </div>
+    <div class="panel" style="flex: 1;">
+      <div class="ptitle" id="sync-title">Semaphore</div>
+      <div id="sync-content" style="flex:1;display:flex;flex-direction:column;justify-content:center;"></div>
+    </div>
+  </div>
+</div>
+
+<div class="gantt-panel">
+  <div class="ptitle">Gantt Chart — Execution Timeline</div>
+  <div class="gantt-wrap">
+    <svg class="gantt-svg" id="gantt-svg" width="620" height="20"></svg>
+  </div>
+</div>
+
+<div class="log-panel" id="log-panel">
+  <div class="le"><span class="lt">00:00</span><span class="lm info">Simulator ready. Press Start to begin.</span></div>
+</div>
+
+</div>
+    <script src="multithreading_simulator_v2.js"></script>
+</body>
+</html>
+
++
