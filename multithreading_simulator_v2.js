@@ -13,7 +13,7 @@ let S={
   interval:null, semCount:2, semMax:2,
   buffer:[], bufMax:6, prodCount:0,
   logs:[], ganttLog:[],
-  sjfQueue:[],     // ready queue for SJF (sorted by shortest burst time)
+  sjfQueue:[],     // ready queue for SJF (sorted by Shortest burst time)
   quantum:2,       // unused but kept for UI
   fcfsQueue:[]     // FIFO order of ready threads for FCFS
 };
