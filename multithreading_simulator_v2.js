@@ -615,3 +615,4 @@ if (rrOption) {
   rrOption.value = 'sjf';
   rrOption.textContent = 'SJF';
 }
+Description: Resolved merge conflicts in multithreading_simulator_v2.js. Keeping the new features and logic while removing the conflict markers.
